@@ -25,4 +25,12 @@ describe Oystercard do
 
   end
 
+  context '#deduct' do
+
+    it 'deducts money from oystercard' do
+      subject.top_up(10)
+      expect(subject.deduct(5)).to eq 5
+    end
+
+  end
 end

@@ -9,8 +9,11 @@ class Oystercard
   end
 
   def top_up(amount)
+    raise "Balance can't exceed 90" if amount + balance > MAXIMUM_BALANCE
     @balance += amount
-    raise "Balance can't exceed 90" if @balance > MAXIMUM_BALANCE
   end
 
+  def deduct(amount)
+    @balance -= amount
+  end
 end
