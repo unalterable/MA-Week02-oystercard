@@ -5,6 +5,10 @@ describe Oystercard do
   subject(:oystercard) { described_class.new }
   
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
+  let(:min_fare) { Oystercard::MINIMUM_FARE }
+
+  let(:station1) {:liverpool_street}
+  let(:station2) {:bank}
 
   context '#top_up' do
 
@@ -29,15 +33,6 @@ describe Oystercard do
 
   end
 
-  context '#deduct' do
-
-    it 'deducts money from oystercard' do
-      subject.top_up(10)
-      expect{subject.deduct(5)}.to change{subject.balance}.by(-5)
-    end
-
-  end
-
   context '#touch_in' do
 
     it 'responds to touch_in method with one argument' do
@@ -50,48 +45,48 @@ describe Oystercard do
 
     it 'touching in changes status of oystercard to in journey' do
       subject.top_up(min_bal)
-      station = :liverpool_street
-      subject.touch_in(station)
+      subject.touch_in(station1)
       expect(subject.in_journey).to eq(true)
     end
 
     it 'checks oystercard is not in a journey before touching in' do
       subject.top_up(min_bal)
       message = "Already in a journey"
-      station = :liverpool_street
-      subject.touch_in(station)
-      expect{subject.touch_in(station)}.to raise_error(message)
+      subject.touch_in(station1)
+      expect{subject.touch_in(station1)}.to raise_error(message)
     end
 
     it 'will not allow touch in if funds are below minimum' do
       message = "Not enough funds"
-      station = :liverpool_street
-      expect{subject.touch_in(station)}.to raise_error(message)
+      expect{subject.touch_in(station1)}.to raise_error(message)
     end
 
   end
 
-    context '#touch_out' do
+  context '#touch_out' do
 
-      it 'responds to touch_out method with one argument' do
-        expect(subject).to respond_to(:touch_out).with(1).argument
-      end
-
-      it 'checks oystercard is in a journey before touching out' do
-        message = "Not yet started journey"
-        station = :bank
-        expect{subject.touch_out(station)}.to raise_error(message)
-      end
-
-      it 'touching out changes status of oystercard to not in journey' do
-        subject.top_up(min_bal)
-        station = :liverpool_street
-        subject.touch_in(station)
-        station = :bank
-        subject.touch_out(station)
-        expect(subject.in_journey).to eq(false)
-      end
-
+    it 'responds to touch_out method with one argument' do
+      expect(subject).to respond_to(:touch_out).with(1).argument
     end
+
+    it 'checks oystercard is in a journey before touching out' do
+      message = "Not yet started journey"
+      expect{subject.touch_out(station2)}.to raise_error(message)
+    end
+
+    it 'touching out changes status of oystercard to not in journey' do
+      subject.top_up(min_bal)
+      subject.touch_in(station1)
+      subject.touch_out(station2)
+      expect(subject.in_journey).to eq(false)
+    end
+
+    it 'reduces the balance by a minimum fare' do
+      subject.top_up(10)
+      subject.touch_in(station1)
+      expect{subject.touch_out(station2)}.to change{subject.balance}.by(-min_fare)
+    end
+
+  end
 
 end
