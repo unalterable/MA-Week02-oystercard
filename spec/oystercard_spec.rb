@@ -3,12 +3,12 @@ require 'oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
-  
+
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
   let(:min_fare) { Oystercard::MINIMUM_FARE }
 
-  let(:station1) {:liverpool_street}
-  let(:station2) {:bank}
+  let(:station1) {double (:liverpool_street)}
+  let(:station2) {double (:bank)}
 
   context '#top_up' do
 
@@ -40,13 +40,13 @@ describe Oystercard do
     end
 
     it 'checks oystercard is initialized out of journey' do
-      expect(subject.in_journey).to eq(false)
+      expect(subject.in_journey?).to eq(false)
     end
 
     it 'touching in changes status of oystercard to in journey' do
       subject.top_up(min_bal)
       subject.touch_in(station1)
-      expect(subject.in_journey).to eq(true)
+      expect(subject.in_journey?).to eq(true)
     end
 
     it 'checks oystercard is not in a journey before touching in' do
@@ -61,6 +61,10 @@ describe Oystercard do
       expect{subject.touch_in(station1)}.to raise_error(message)
     end
 
+    it 'remembers the entry station' do
+      subject.top_up(min_bal)
+      expect{subject.touch_in(station1)}.to change{subject.entry_station}.to (station1)
+    end
   end
 
   context '#touch_out' do
@@ -78,7 +82,7 @@ describe Oystercard do
       subject.top_up(min_bal)
       subject.touch_in(station1)
       subject.touch_out(station2)
-      expect(subject.in_journey).to eq(false)
+      expect(subject.in_journey?).to eq(false)
     end
 
     it 'reduces the balance by a minimum fare' do
@@ -87,6 +91,11 @@ describe Oystercard do
       expect{subject.touch_out(station2)}.to change{subject.balance}.by(-min_fare)
     end
 
+    it 'makes the card forget the entry station upon touching out' do
+      subject.top_up(min_bal)
+      subject.touch_in(station1)
+      expect{subject.touch_out(station2)}.to change{subject.entry_station}.to nil
+    end
   end
 
 end
