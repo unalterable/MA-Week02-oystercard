@@ -3,6 +3,8 @@ require 'oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
+  
+  let(:min_bal) { Oystercard::MINIMUM_BALANCE }
 
   context '#top_up' do
 
@@ -47,17 +49,27 @@ describe Oystercard do
     end
 
     it 'touching in changes status of oystercard to in journey' do
+      subject.top_up(min_bal)
       station = :liverpool_street
       subject.touch_in(station)
       expect(subject.in_journey).to eq(true)
     end
 
     it 'checks oystercard is not in a journey before touching in' do
+      subject.top_up(min_bal)
       message = "Already in a journey"
       station = :liverpool_street
       subject.touch_in(station)
       expect{subject.touch_in(station)}.to raise_error(message)
     end
+
+    it 'will not allow touch in if funds are below minimum' do
+      message = "Not enough funds"
+      station = :liverpool_street
+      expect{subject.touch_in(station)}.to raise_error(message)
+    end
+
+  end
 
     context '#touch_out' do
 
@@ -72,6 +84,7 @@ describe Oystercard do
       end
 
       it 'touching out changes status of oystercard to not in journey' do
+        subject.top_up(min_bal)
         station = :liverpool_street
         subject.touch_in(station)
         station = :bank
@@ -80,8 +93,5 @@ describe Oystercard do
       end
 
     end
-
-  end
-
 
 end
