@@ -11,7 +11,7 @@ class Oystercard
   def initialize
     @balance = 0
     @log = []
-  end 
+  end
 
   def top_up(amount)
     fail MAX_LIM_ERR_MSG if @balance + amount > MAXIMUM_LIMIT
@@ -20,8 +20,7 @@ class Oystercard
 
   def touch_in(station)
     fail MIN_LIM_ERR_MSG if @balance < MINIMUM_FARE
-    @journey = Journey.new
-    @journey.start_journey(station)
+    @journey = Journey.new(station)
   end
 
   def touch_out(station)

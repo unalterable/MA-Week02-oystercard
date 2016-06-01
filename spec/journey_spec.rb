@@ -1,13 +1,12 @@
 require 'journey'
 
 describe Journey do
-  subject(:journey) { described_class.new }
+  subject(:journey) { described_class.new(station1) }
   let(:station1) { double(:station1, name: "Vauxhall", zone: 2)}
   let(:station2) { double(:station2, name: "Aldgate", zone: 1)}
 
-  describe '#start_journey' do
+  describe '#new' do
     it 'starts the journey' do
-      journey.start_journey(station1)
       expect(journey.entry_station).to be station1
     end
   end
@@ -21,12 +20,10 @@ describe Journey do
 
   describe '#complete?' do
     it 'has an incomplete journey' do
-      journey.start_journey(station1)
       expect(journey).to_not be_complete
     end
 
     it 'completes the journey' do
-      journey.start_journey(station1)
       journey.end_journey(station2)
       expect(journey).to be_complete
     end
@@ -34,11 +31,9 @@ describe Journey do
 
   describe '#fare' do
     it 'returns a penalty fare when no exit' do
-      journey.start_journey(station1)
       expect(journey.fare).to be(described_class::PENALTY_FARE)
     end
     it 'returns a minimum fare for complete journey' do
-      journey.start_journey(station1)
       journey.end_journey(station2)
       expect(journey.fare).to be(described_class::MINIMUM_FARE)
     end
