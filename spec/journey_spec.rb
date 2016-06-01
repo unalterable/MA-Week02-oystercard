@@ -2,7 +2,7 @@ require 'journey'
 
 describe Journey do
   subject(:journey) { described_class.new(station1) }
-  let(:station1) { double(:station1, name: "Vauxhall", zone: 2)}
+  let(:station1) { double(:station1, name: "Uxbridge", zone: 5)}
   let(:station2) { double(:station2, name: "Aldgate", zone: 1)}
 
   describe '#new' do
@@ -33,9 +33,9 @@ describe Journey do
     it 'returns a penalty fare when no exit' do
       expect(journey.fare).to be(described_class::PENALTY_FARE)
     end
-    it 'returns a minimum fare for complete journey' do
+    it 'returns a fare for complete journey' do
       journey.end_journey(station2)
-      expect(journey.fare).to be(described_class::MINIMUM_FARE)
+      expect(journey.fare).to be(5) # 4 boundries + 1 
     end
   end
 end

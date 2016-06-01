@@ -3,8 +3,8 @@ require "oystercard"
 describe Oystercard do
   subject(:oystercard) { described_class.new }
 
-  let(:station) { double(:station) }
-  let(:station2) { double(:station) }
+  let(:station) { double(:station, zone: 1) }
+  let(:station2) { double(:station2, zone: 1) }
 
   describe "#balance" do
     it "doesn't return nil" do
