@@ -6,11 +6,11 @@ class Oystercard
   MAX_LIM_ERR_MSG = "£#{MAXIMUM_LIMIT} is the maximum limit"
   MIN_LIM_ERR_MSG = "£#{MINIMUM_FARE} is the minimum limit"
 
-  attr_reader :balance, :log, :journey
+  attr_reader :balance, :log
 
-  def initialize
+  def initialize(log = JourneyLog.new(journey_class: Journey))
     @balance = 0
-    @log = []
+    @log = log
   end
 
   def top_up(amount)
@@ -20,14 +20,12 @@ class Oystercard
 
   def touch_in(station)
     fail MIN_LIM_ERR_MSG if @balance < MINIMUM_FARE
-    @journey = Journey.new(station)
+    log.start(station)
   end
 
   def touch_out(station)
-    journey.end_journey(station) if journey
-    log << journey
-    deduct(journey.fare)
-    @journey = nil
+    log.finish(station)
+    deduct(log.current_journey.fare)
   end
 
   private
