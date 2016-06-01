@@ -3,7 +3,7 @@ require 'journey_log'
 describe JourneyLog do
   subject(:journey_log) { described_class.new(journey_class: journey_class) }
   let(:journey_class) { double(:journey_class, new: journey) }
-  let(:journey) { double(:journey, end_journey: nil) }
+  let(:journey) { double(:journey, end_journey: nil, complete?: true) }
   let(:station1) { double(:station1) }
   let(:station2) { double(:station2) }
 
@@ -11,13 +11,6 @@ describe JourneyLog do
     it 'creates a new journey' do
       expect(journey_class).to receive(:new)
       journey_log.start(station1)
-    end
-  end
-
-  describe '#current_journey' do
-    it 'return a journey object' do
-      journey_log.start(station1)
-      expect(journey_log.current_journey).to eq journey
     end
   end
 
