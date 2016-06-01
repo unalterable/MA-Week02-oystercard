@@ -12,4 +12,8 @@ class Journey
     @exit_station = station
   end
 
+  def in_journey?
+    exit_station == nil ? true : false
+  end
+
 end

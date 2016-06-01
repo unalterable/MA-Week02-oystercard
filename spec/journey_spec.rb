@@ -14,5 +14,4 @@ describe Journey do
     expect{journey.set_exit(station)}.to change{journey.exit_station}.to (station)
   end
 
-
 end
