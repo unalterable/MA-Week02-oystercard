@@ -1,7 +1,6 @@
 require_relative 'journey'
 require_relative 'journey_log'
 
-
 class Oystercard
   MAXIMUM_LIMIT = 90
   MINIMUM_FARE = Journey::MINIMUM_FARE

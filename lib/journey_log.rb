@@ -6,13 +6,11 @@ class JourneyLog
   end
 
   def start(station)
-    journey_to_start = new_journey(station)
-    log << journey_to_start
+    new_journey(station)
   end
 
   def finish(station)
-    journey_to_complete = no_journey_start_recorded? ? new_journey : log.last
-    journey_to_complete.end_journey(station)
+    (prev_journey_exists_and_isnt_complete? ? log.last : new_journey).end_journey(station)
   end
 
   def journeys
@@ -20,17 +18,20 @@ class JourneyLog
   end
 
   def current_journey
-    no_journey_start_recorded? ? nil : log.last
+    log.last if log.last
   end
 
   private
+  
   attr_reader :log
-  def no_journey_start_recorded?
-    !log.last || log.last.complete? 
+
+  def prev_journey_exists_and_isnt_complete?
+    log.last && log.last.complete?
   end
 
   def new_journey(start_station = nil)
-    @journey_class.new(start_station)
+    log << @journey_class.new(start_station)
+    log.last
   end
 
 end
