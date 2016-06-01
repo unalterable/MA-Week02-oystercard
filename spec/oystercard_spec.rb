@@ -4,19 +4,22 @@ describe Oystercard do
 
   subject(:oystercard) { described_class.new }
 
+  let(:max_bal) { Oystercard::MAXIMUM_BALANCE }
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
   let(:min_fare) { Oystercard::MINIMUM_FARE }
 
   let(:station1) {double (:liverpool_street)}
   let(:station2) {double (:bank)}
 
-  context '#top_up' do
-
-    let(:max_bal) { Oystercard::MAXIMUM_BALANCE }
+  context 'upon initialization' do
 
     it 'checks new oystercard has zero balance' do
       expect(subject.balance).to eq(0)
     end
+
+  end
+
+  context '#top_up' do
 
     it 'responds to top up method' do
       expect(subject).to respond_to(:top_up).with(1).argument
