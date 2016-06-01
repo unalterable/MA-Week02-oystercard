@@ -30,7 +30,7 @@ describe Oystercard do
 
     it "begins the journey" do
       oystercard.touch_in(station)
-      expect(oystercard.entry_station).to_not be nil
+      expect(oystercard.journey).to_not be nil
     end
 
     context "low balance" do
@@ -50,28 +50,13 @@ describe Oystercard do
 
     it "ends the journey" do
       oystercard.touch_out(station2)
-      expect(oystercard.entry_station).to be nil
+      expect(oystercard.journey).to be nil
     end
 
     it "deducts the minimum fare" do
       expect { oystercard.touch_out(station2) }.to change { oystercard.balance }.by(-Oystercard::MINIMUM_FARE)
     end
 
-    it "forgets the entry station" do
-      oystercard.touch_out(station2)
-      expect(oystercard.entry_station).to be nil
-    end
-  end
-
-  describe "#entry_station" do
-    before do
-      oystercard.top_up(10)
-      oystercard.touch_in(station)
-    end
-
-    it "records entry station" do
-      expect(oystercard.entry_station).to eq station
-    end
   end
 
   describe "#log" do
@@ -85,11 +70,10 @@ describe Oystercard do
       before do
         oystercard.top_up(10)
         oystercard.touch_in(station)
-        oystercard.touch_out(station2)
       end
 
       it "has a log of the journey" do
-        expect(oystercard.log).to eq([{ entry: station, exit: station2 }])
+        expect{ oystercard.touch_out(station2) }.to change{oystercard.log.count}.by(1)
       end
     end
   end

@@ -33,8 +33,14 @@ describe Journey do
   end
 
   describe '#fare' do
-    it 'returns a number' do
-      expect(journey.fare).to be_a(Fixnum)
+    it 'returns a penalty fare when no exit' do
+      journey.start_journey(station1)
+      expect(journey.fare).to be(described_class::PENALTY_FARE)
+    end
+    it 'returns a minimum fare for complete journey' do
+      journey.start_journey(station1)
+      journey.end_journey(station2)
+      expect(journey.fare).to be(described_class::MINIMUM_FARE)
     end
   end
 end
