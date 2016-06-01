@@ -2,16 +2,16 @@ require 'station'
 
 describe Station do
 
-  subject(:station) { described_class.new("Tower Hill", 1) }
+  subject(:station) { described_class.new("Bank") }
 
   context 'initialization'do
     
     it 'checks that name is initialized' do
-      expect(station.name).to eq("Tower Hill")
+      expect(station.name).to eq("Bank")
     end
 
     it 'checks that zone is initialized' do
-      expect(station.zone).to eq(1)
+      expect(station.zone).to be_nil
     end
   end
   
