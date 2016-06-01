@@ -11,7 +11,7 @@ describe Journey do
   end
 
   it '#set_exit stores the exit station' do
-    expect{journey.set_exit(station)}.to change{journey.exit_station}.to (station)
+    expect{journey.set_exit("Poplar",station)}.to change{journey.exit_station}.to (station)
   end
 
 end

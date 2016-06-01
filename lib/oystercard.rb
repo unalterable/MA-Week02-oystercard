@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class Oystercard
 
   attr_reader :balance
@@ -25,18 +27,17 @@ class Oystercard
     # @journeys << {:entry_station => station}
   end
 
-  def touch_out(station)
+  def touch_out(station_name,station=Station.new(station_name))
     raise "Not yet started journey" if in_journey? == false
     deduct(MINIMUM_FARE)
-    @journeys.last.set_exit(station)
+    @journeys.last.set_exit(station_name,station)
     @journeys.last
     
   end
 
   def in_journey?
     return false if @journeys.empty?
-    @journeys.last.exit_station == nil ? true : false
-    p @journeys.last
+    return @journeys.last.exit_station == nil ? true : false
   end
 
 private

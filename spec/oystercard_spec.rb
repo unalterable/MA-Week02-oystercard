@@ -8,9 +8,9 @@ describe Oystercard do
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
   let(:min_fare) { Oystercard::MINIMUM_FARE }
   
-  let(:journey) {double (:journey)}
-  let(:station1) {double (:station)}
-  let(:station2) {double (:station)}
+  let(:journey) {double :journey, :entry_station => station1, :exit_station => station2, :set_exit => station2}
+  let(:station1) {double :station, :name => "Bank"}
+  let(:station2) {double :station, :name => "Poplar"}
 
   context 'upon initialization' do
 
@@ -69,12 +69,6 @@ describe Oystercard do
       expect{oystercard.touch_in(station1)}.to raise_error(message)
     end
 
-    it 'remembers the entry station' do
-      oystercard.top_up(min_bal)
-      oystercard.touch_in(station1)
-      expect(oystercard.journeys.last[:entry_station]).to eq(station1)
-    end
-
     it 'creates a new journey object with entry_station' do
       oystercard.top_up(min_bal)
       allow(journey).to receive(:entry_station) {station1}
@@ -111,17 +105,13 @@ describe Oystercard do
     it 'stores the journey' do
       oystercard.top_up(min_bal)
       oystercard.touch_in(station1)
-      expect{oystercard.touch_out(station2)}.to change{oystercard.journeys.last}.to include(:exit_station => station2)
+      expect{oystercard.touch_out("Poplar",station2)}.to change{oystercard.journeys.last.exit_station}.to eq(station2)
     end
 
     it 'modifies the journey object to set exit station' do
+      allow(journey).to receive(:exit_station) { nil }
       oystercard.top_up(min_bal)
-      allow(journey).to receive(:entry_station) {station1}
-      allow(station1).to receive(:name) {"Bank"}
       oystercard.touch_in("Bank", journey)
-      allow(journey).to receive(:set_exit) {station2}
-      allow(journey).to receive(:exit_station) {station2}
-      allow(station2).to receive(:name) {"Poplar"}
       expect(oystercard.touch_out("Poplar")).to eq(journey)
     end
 

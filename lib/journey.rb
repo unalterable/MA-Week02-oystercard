@@ -1,3 +1,5 @@
+require_relative 'station'
+
 class Journey
 
   attr_reader :entry_station
@@ -8,12 +10,8 @@ class Journey
     @exit_station
   end
 
-  def set_exit(station)
+  def set_exit(station_name,station=Station.new(station_name))
     @exit_station = station
-  end
-
-  def in_journey?
-    exit_station == nil ? true : false
   end
 
 end
