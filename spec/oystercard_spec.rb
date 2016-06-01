@@ -1,7 +1,10 @@
 require "oystercard"
 
 describe Oystercard do
-  subject(:oystercard) { described_class.new }
+
+  subject(:oystercard) { described_class.new(journey_log) }
+  let(:journey) { double(:journey, fare: 1) }
+  let(:journey_log) { double(:journey_log, start: nil, current_journey: journey, finish: nil) }
 
   let(:station) { double(:station, zone: 1) }
   let(:station2) { double(:station2, zone: 1) }
@@ -29,8 +32,8 @@ describe Oystercard do
     end
 
     it "begins the journey" do
+      expect(journey_log).to receive(:start).with(station)
       oystercard.touch_in(station)
-      expect(oystercard.journey).to_not be nil
     end
 
     context "low balance" do
@@ -48,33 +51,14 @@ describe Oystercard do
       oystercard.touch_in(station)
     end
 
-    it "ends the journey" do
+    it "sends #finish to journey_log" do
+      expect(journey_log).to receive(:finish).with(station2)
       oystercard.touch_out(station2)
-      expect(oystercard.journey).to be nil
     end
 
     it "deducts the minimum fare" do
       expect { oystercard.touch_out(station2) }.to change { oystercard.balance }.by(-Oystercard::MINIMUM_FARE)
     end
-
   end
 
-  describe "#log" do
-    it "has an empty log to begin with" do
-      expect(oystercard.log).to eq []
-    end
-
-    context "has made a journey" do
-      subject(:oystercard) { described_class.new }
-
-      before do
-        oystercard.top_up(10)
-        oystercard.touch_in(station)
-      end
-
-      it "has a log of the journey" do
-        expect{ oystercard.touch_out(station2) }.to change{oystercard.log.count}.by(1)
-      end
-    end
-  end
 end
