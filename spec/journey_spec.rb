@@ -5,6 +5,7 @@ describe Journey do
   subject(:journey) { described_class.new(station) }
 
   let(:station) { double(:station) }
+  let(:min_fare) { described_class::MINIMUM_FARE}
 
   it 'will be initialized with a new entry station' do
     expect(journey.entry_station).to eq(station)
@@ -17,8 +18,8 @@ describe Journey do
   end
 
   describe '#fare' do
-    it '' do
-      
+    it 'returns the minimum fare' do
+      expect(journey.fare).to eq(min_fare)
     end
   end
 

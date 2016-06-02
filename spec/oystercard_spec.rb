@@ -6,7 +6,6 @@ describe Oystercard do
 
   let(:max_bal) { Oystercard::MAXIMUM_BALANCE }
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
-  let(:min_fare) { Oystercard::MINIMUM_FARE }
   
   #let(:journey) {double :journey, :entry_station => station1, :exit_station => station2, :set_exit => station2}
   let(:station1) {double :station, :name => "Bank"}
@@ -95,10 +94,10 @@ describe Oystercard do
       expect(oystercard.in_journey?).to eq(false)
     end
 
-    it 'deducts the balance by a minimum fare' do
+    it 'changes the balance' do
       oystercard.top_up(10)
       oystercard.touch_in(station1)
-      expect{oystercard.touch_out(station2)}.to change{oystercard.balance}.by(-min_fare)
+      expect{oystercard.touch_out(station2)}.to change{oystercard.balance}
     end
 
     it 'stores the journey' do

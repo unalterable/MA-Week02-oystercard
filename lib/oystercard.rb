@@ -7,8 +7,6 @@ class Oystercard
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
-  MINIMUM_FARE = 1
-
   def initialize
     @balance = 0
     @journeys = []
@@ -27,8 +25,8 @@ class Oystercard
 
   def touch_out(station_object)
     raise "Not yet started journey" unless in_journey?
-    deduct(MINIMUM_FARE)
     journeys.last.set_exit(station_object)
+    deduct(journeys.last.fare)
   end
 
   def in_journey?
