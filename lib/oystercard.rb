@@ -19,25 +19,21 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in(station, journey=Journey.new(station))
+  def touch_in(station_object)
     raise "Already in a journey" if in_journey?
     raise "Not enough funds" if balance < MINIMUM_BALANCE
-    @journeys << journey
-    @journeys.last
-    # @journeys << {:entry_station => station}
+    journeys << Journey.new(station_object)
   end
 
-  def touch_out(station_name,station=Station.new(station_name))
-    raise "Not yet started journey" if in_journey? == false
+  def touch_out(station_object)
+    raise "Not yet started journey" unless in_journey?
     deduct(MINIMUM_FARE)
-    @journeys.last.set_exit(station_name,station)
-    @journeys.last
-    
+    journeys.last.set_exit(station_object)
   end
 
   def in_journey?
-    return false if @journeys.empty?
-    return @journeys.last.exit_station == nil ? true : false
+    return false if journeys.empty?
+    journeys.last.exit_station == nil
   end
 
 private
