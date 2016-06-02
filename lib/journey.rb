@@ -1,7 +1,9 @@
 require_relative 'station'
 
 class Journey
-  MINIMUM_FARE = 1
+  MIN_FARE = 1
+  PENALTY_FARE = 6
+  
   attr_reader :entry_station
   attr_reader :exit_station
 
@@ -14,6 +16,11 @@ class Journey
   end
 
   def fare
-    MINIMUM_FARE
+    complete? ? MIN_FARE : PENALTY_FARE
   end
+
+  def complete?
+    entry_station && exit_station
+  end
+
 end

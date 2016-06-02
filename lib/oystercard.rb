@@ -1,4 +1,4 @@
-require_relative 'journey'
+require_relative 'journey_log'
 
 class Oystercard
 
@@ -9,7 +9,7 @@ class Oystercard
   MINIMUM_BALANCE = 1
   def initialize
     @balance = 0
-    @journeys = []
+    @journeys = JourneyLog.build
   end
 
   def top_up(amount)
@@ -18,20 +18,15 @@ class Oystercard
   end
 
   def touch_in(station_object)
-    raise "Already in a journey" if in_journey?
+    raise "Already in a journey" if journeys.in_journey?
     raise "Not enough funds" if balance < MINIMUM_BALANCE
-    journeys << Journey.new(station_object)
+    journeys.begin(station_object)
   end
 
   def touch_out(station_object)
-    raise "Not yet started journey" unless in_journey?
-    journeys.last.set_exit(station_object)
-    deduct(journeys.last.fare)
-  end
-
-  def in_journey?
-    return false if journeys.empty?
-    journeys.last.exit_station == nil
+    raise "Not yet started journey" unless journeys.in_journey?
+    journeys.finish(station_object)
+    deduct(journeys.log.last.fare)
   end
 
 private
